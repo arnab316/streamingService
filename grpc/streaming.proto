@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service StreamingService {
+  rpc StreamVideo (StreamRequest) returns (stream VideoResponse) {}
+}
+
+message StreamRequest {
+  string movieId = 1;
+}
+
+message VideoResponse {
+  bytes videoChunk = 1; 
+}
