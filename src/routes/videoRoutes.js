@@ -1,7 +1,9 @@
-const v1Routes = async(fastify, options)=>{
-    fastify.get('/test', async(request, reply)=>{
-      return {message: "Hello from v1 route"}
-    })
- }
- 
- export default v1Routes;
+import express from 'express';
+import upload from '../config/multerConfig.js'; 
+const router = express.Router();
+import { uploadVideo } from '../controllers/videoController.js';
+
+
+router.post('/upload', upload.single('file'), uploadVideo); 
+
+export default router;

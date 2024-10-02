@@ -26,23 +26,29 @@ if (!streamingService) {
   process.exit(1);
 }
 
-// gRPC server-side streaming function
+//* gRPC server-side streaming function
+
 function streamVideo(call) {
   const { movieId } = call.request;
-  const videoPath = path.join(__dirname, `../uploads/${movieId}.mp4`);
-
-  if (fs.existsSync(videoPath)) {
-    const videoStream = fs.createReadStream(videoPath);
-    videoStream.on('data', (chunk) => {
+  const playlistPath = path.join(__dirname, `../uploads/${movieId}/output.m3u8`);
+  
+  if (fs.existsSync(playlistPath)) {
+    const playlistStream = fs.createReadStream(playlistPath);
+    
+    playlistStream.on('data', (chunk) => {
       call.write({ videoChunk: chunk });
     });
-    videoStream.on('end', () => call.end());
+    
+    playlistStream.on('end', () => {
+      call.end();
+    });
+    
   } else {
-    console.error(`Video not found: ${videoPath}`);
+    console.error(`Playlist not found: ${playlistPath}`);
     call.end();
   }
 }
-
+//* Define and Start the server 
 const server = new grpc.Server();
 server.addService(streamingService.service, { streamVideo });
 
