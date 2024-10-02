@@ -23,7 +23,7 @@ export const transcodeVideo = (inputPath, outputDir) => {
         '-hls_time 10',        // Segment duration
         '-hls_list_size 0',    // Ensure all segments are listed
         '-f hls',               // Output format: HLS
-        '-loglevel debug'
+        '-loglevel debug'       // Enable debug logging
       ])
       .on('start', (commandLine) => {
         console.log('FFmpeg process started with command: ' + commandLine);
