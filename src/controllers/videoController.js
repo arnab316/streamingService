@@ -25,6 +25,8 @@ export const uploadVideo = async (req, res) => {
     }
 
     console.log('File uploaded successfully! Starting transcoding...');
+    console.log(`Transcoding output saved to: ${outputDir}`);
+
     await transcodeVideo(uploadPath, outputDir); // Assuming transcodeVideo takes the directory path
     res.send({ message: 'File uploaded and transcoded successfully!', filename: file.originalname });
   } catch (err) {

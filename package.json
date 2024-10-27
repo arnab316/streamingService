@@ -12,13 +12,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@fastify/multipart": "^9.0.1",
     "@grpc/grpc-js": "^1.11.3",
     "@grpc/proto-loader": "^0.7.13",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "fastify": "^5.0.0",
     "fastify-multipart": "^5.3.1",
     "fastify-static": "^4.6.1",
     "ffmpeg": "^0.0.4",

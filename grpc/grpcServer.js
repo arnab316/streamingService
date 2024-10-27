@@ -30,71 +30,27 @@ if (!streamingService) {
 
 function streamVideo(call) {
   const { movieId } = call.request;
-  const playlistPath = path.join(__dirname, `../uploads/${movieId}/output.m3u8`);
+  console.log(`Received movieId: ${movieId}`);
+
+  // Directly access the playlist file from the src/uploads directory
+  const playlistPath = path.join(__dirname, '../src/uploads/output.m3u8');
 
   if (fs.existsSync(playlistPath)) {
-    const playlistStream = fs.createReadStream(playlistPath);
-    let tsFiles = [];
-
+    console.log(`Playlist found at: ${playlistPath}`);
+    const playlistStream = fs.createReadStream(playlistPath)
+    // ... rest of the streaming logic
     playlistStream.on('data', (chunk) => {
-      // Convert the chunk to string and split by line
-      const lines = chunk.toString().split('\n');
-      for (const line of lines) {
-        const trimmedLine = line.trim();
-        // Check if the line is a .ts file reference
-        if (trimmedLine && trimmedLine.endsWith('.ts')) {
-          tsFiles.push(trimmedLine);
-        }
-      }
+      call.write({ videoChunk: chunk });
     });
-
+    
     playlistStream.on('end', () => {
-      // Stream each .ts file sequentially
-      let index = 0;
-
-      function streamNext() {
-        if (index < tsFiles.length) {
-          const tsFileName = tsFiles[index];
-          const tsFilePath = path.join(__dirname, `../uploads/${movieId}/${tsFileName}`);
-
-          if (fs.existsSync(tsFilePath)) {
-            const tsStream = fs.createReadStream(tsFilePath);
-
-            tsStream.on('data', (tsChunk) => {
-              call.write({ videoChunk: tsChunk });
-            });
-
-            tsStream.on('end', () => {
-              console.log(`Finished streaming ${tsFileName}`);
-              index++;
-              streamNext(); // Call the next .ts file
-            });
-
-            tsStream.on('error', (err) => {
-              console.error(`Error reading ${tsFileName}:`, err);
-              index++;
-              streamNext(); // Proceed to the next file even if there's an error
-            });
-          } else {
-            console.error(`TS file not found: ${tsFilePath}`);
-            index++;
-            streamNext(); // Proceed to the next file
-          }
-        } else {
-          call.end(); // End the stream after all .ts files are processed
-        }
-      }
-
-      streamNext(); // Start streaming the first .ts file
+      call.end();
     });
-
   } else {
     console.error(`Playlist not found: ${playlistPath}`);
     call.end();
   }
 }
-
-
 
 
 //* Define and Start the server 

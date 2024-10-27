@@ -1,6 +1,5 @@
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +18,7 @@ const streamingService = protoDescriptor.StreamingService;
 
 const client = new streamingService('localhost:50051', grpc.credentials.createInsecure());
 
-const call = client.StreamVideo({ movieId: 'file-1727861847546-13045193' });
+const call = client.StreamVideo({ movieId: 'file-1730054945165-854507553' });
 
 call.on('data', (response) => {
   const videoChunk = response.videoChunk;
